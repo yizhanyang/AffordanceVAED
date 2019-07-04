@@ -3,6 +3,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 from torch.nn import functional as F
 
+def MC_dropout(act_vec, p, mask=True):
+    return F.dropout(act_vec, p=p, training=mask)
 
 class Decoder(nn.Module):
 
@@ -58,14 +60,20 @@ class Encoder(nn.Module):
         self.bn5 = nn.BatchNorm2d(64)
 
         self.relu = F.relu
+        self.pdrop = 0.3
 
     def forward(self, x):
 
         x = self.relu(self.bn1(self.cnn1(x)))
+        x = MC_dropout(x, p=self.pdrop, mask=True)
         x = self.relu(self.bn2(self.cnn2(x)))
+        x = MC_dropout(x, p=self.pdrop, mask=True)
         x = self.relu(self.bn3(self.cnn3(x)))
+        x = MC_dropout(x, p=self.pdrop, mask=True)
         x = self.relu(self.bn4(self.cnn4(x)))
+        x = MC_dropout(x, p=self.pdrop, mask=True)
         x = self.relu(self.bn5(self.cnn5(x)))
+        x = MC_dropout(x, p=self.pdrop, mask=True)
 
         x = x.view(-1, 1536)
 
