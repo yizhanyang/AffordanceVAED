@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import torch
 
+#1
 '''
   1 - 'grasp': red (255, 0, 0)
   2 - 'cut':   yellow (255, 255, 0)
@@ -15,13 +16,13 @@ import torch
 '''
 
 AFFORDANCE_RGB = {
-    1: (255, 0, 0),
-    2: (255, 255, 0),
-    3: (0, 255, 0),
-    4: (0, 255, 255),
-    5: (0, 0, 255),
-    6: (255, 0, 255),
-    7: (255, 255, 255),
+    1: (1.0, 0, 0),
+    2: (1.0, 1.0, 0),
+    3: (0, 1.0, 0),
+    4: (0, 1.0, 1.0),
+    5: (0, 0, 1.0),
+    6: (1.0, 0, 1.0),
+    7: (1.0, 1.0, 1.0),
     }
 
 DEPTH_MAX = 3626
@@ -84,7 +85,7 @@ def affordance_layers_to_array(affordance_matrix):
     if torch.is_tensor(affordance_matrix):
         affordance_matrix = affordance_matrix.detach().cpu().numpy()
 
-    grayscale_layers = np.array([np.stack((affordance_matrix[idx] ,) * 3) * 255 for idx in range(affordance_matrix.shape[0])])
+    grayscale_layers = np.array([np.stack((affordance_matrix[idx] ,) * 3) for idx in range(affordance_matrix.shape[0])])
 
     return grayscale_layers
 
