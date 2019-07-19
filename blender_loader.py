@@ -110,8 +110,10 @@ class BlenderFolder(data.Dataset):
 
         if image.mode == 'RGBA':
             image = image.convert('RGB')
+        
 
-        transform_content = transforms.Compose([transforms.ToTensor()])
+        
+        transform_content = transforms.Compose([transforms.Resize((240,320)),transforms.CenterCrop((160,320)),transforms.ToTensor()])
         transformed = transform_content(image)
 
         return transformed
@@ -140,16 +142,20 @@ class BlenderFolder(data.Dataset):
 
 class BlenderLoader(object):
 
-    def __init__(self, batch_size, num_processes, include_depth, data_paths, debug=False):
+    def __init__(self, batch_size, num_processes, include_depth, data_paths, debug=False, split=True):
 
         self.batch_size = batch_size
         self.num_processes = num_processes
         self.include_depth = include_depth
 
         dataset = BlenderFolder(data_paths, self.include_depth, debug=debug)
-        train_size = int(dataset.__len__() * 0.7)
-        test_size = dataset.__len__() - train_size
-        trainset, testset = torch.utils.data.random_split(dataset, (train_size, test_size))
+        if split:
+            train_size = int(dataset.__len__() * 0.7)
+            test_size = dataset.__len__() - train_size
+            trainset, testset = torch.utils.data.random_split(dataset, (train_size, test_size))
+        else:
+            trainset = dataset
+            testset = dataset
         self.trainset = trainset
         self.testset = testset
 

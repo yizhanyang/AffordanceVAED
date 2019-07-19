@@ -11,9 +11,9 @@ from blender_loader import BlenderFolder
 
 class KinectFolder(BlenderFolder):
 
-    def __init__(self, root_path, include_depth):
+    def __init__(self, root_path, include_depth,include_affordance):
 
-        super(KinectFolder, self).__init__(root_path, include_depth, include_affordance=False)
+        super(KinectFolder, self).__init__([root_path], include_depth)
 
     def image_transform(self, image):
 
@@ -52,9 +52,9 @@ class KinectFolder(BlenderFolder):
 
 class KinectEvaluationLoader(object):
 
-    def __init__(self, include_depth, data_path='~/real_images'):
+    def __init__(self, include_depth, data_path=os.path.join(os.environ["HOME"],'real_images')):
 
-        dataset = KinectFolder(data_path, include_depth)
+        dataset = KinectFolder(data_path, include_depth,include_affordance=False)
         self.dataset = dataset
 
     def get(self, idx):
